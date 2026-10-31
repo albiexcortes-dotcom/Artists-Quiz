@@ -481,7 +481,7 @@ h1 {
 // 28 questions — 7 per dimension (odd number = no ties), mixed order, A/B sides alternate
 const questions = [
   { q: "Between clients, you'd rather...",
-    a: ["Chat with the team at the front desk", "Grab a quiet minute to yourself"],
+    a: ["Chat with the team in the back room", "Grab a quiet minute to yourself"],
     dim: ["E", "I"] },
   { q: "When a client shows you an inspo photo, you focus on...",
     a: ["The feeling they're going for \u2014 the vibe behind the picture", "Exactly what's in the photo \u2014 the length, the tone, the shape"],
@@ -504,7 +504,7 @@ const questions = [
   { q: "Before a big color correction, you...",
     a: ["Plan every step in advance", "Start with a rough plan and adjust as you go"],
     dim: ["J", "P"] },
-  { q: "At an education day or hair show, you...",
+  { q: "At a regional education event or a national hair show, you...",
     a: ["Meet as many people as you can", "Stick with people you know and take it all in"],
     dim: ["E", "I"] },
   { q: "In a consultation, you mostly ask about...",
@@ -534,17 +534,17 @@ const questions = [
   { q: "You'd rather spend a month perfecting...",
     a: ["Something new nobody in the salon is doing yet", "A classic you can nail every single time"],
     dim: ["N", "S"] },
-  { q: "To you, a fair salon is one where...",
+  { q: "To you, a salon with a healthy culture is one where...",
     a: ["The same rules apply to everyone", "Everyone's personal situation is considered"],
     dim: ["T", "F"] },
   { q: "Your education goals for the year are...",
-    a: ["Whatever excites you when it comes up", "Written down, with dates"],
+    a: ["Whatever sparks your creativity when it comes up", "Written down, with dates"],
     dim: ["P", "J"] },
   { q: "Your favorite part of the day is...",
     a: ["The focused calm of one great service", "The buzz of a full, busy salon"],
     dim: ["I", "E"] },
   { q: "When a formula doesn't turn out the way you planned, you...",
-    a: ["Retrace each step to find exactly what went wrong", "Try a new approach based on a gut feeling"],
+    a: ["Retrace each step to find exactly what went wrong", "Trust your color intuition \u2014 you can sense what it needs"],
     dim: ["S", "N"] },
   { q: "You feel most proud when...",
     a: ["A client leaves feeling amazing about themselves", "Your work is technically flawless"],
@@ -562,8 +562,8 @@ const questions = [
     a: ["Point out where the logic doesn't work", "Explain how it will affect the people involved"],
     dim: ["T", "F"] },
   { q: "When the last client leaves, you...",
-    a: ["Head out \u2014 tomorrow will take care of itself", "Reset your station and prep for tomorrow"],
-    dim: ["P", "J"] }
+    a: ["Check tomorrow's book so you know exactly how the day will go", "Let tomorrow be tomorrow \u2014 you'll look at your book in the morning"],
+    dim: ["J", "P"] }
 ];
 
 // Stylist type data
@@ -747,7 +747,7 @@ function showResult() {
   // so a clear cobalt bar visually pushes toward the side you scored.
   const dimensions = [
     { left: 'E', right: 'I', leftLabel: 'Extravert', rightLabel: 'Introvert' },
-    { left: 'S', right: 'N', leftLabel: 'Sensing', rightLabel: 'Intuitive' },
+    { left: 'S', right: 'N', leftLabel: 'Sensing', rightLabel: 'iNtuitive' },
     { left: 'T', right: 'F', leftLabel: 'Thinking', rightLabel: 'Feeling' },
     { left: 'J', right: 'P', leftLabel: 'Judging', rightLabel: 'Perceiving' }
   ];
@@ -787,11 +787,22 @@ function showResult() {
 function copyCard() {
   const r = window.lastResult; if (!r) return;
   const pairs = [['E','I'],['S','N'],['T','F'],['J','P']];
+  const info = {
+    E: ['Extravert', 'gets energy from people and a buzzing salon'],
+    I: ['Introvert', 'gets energy from quiet time and recharges between clients'],
+    S: ['Sensing', 'notices the details first: length, tone, shape'],
+    N: ['iNtuitive', 'notices the feeling and the vibe behind the look first'],
+    T: ['Thinking', 'decides by what will work best technically'],
+    F: ['Feeling', 'decides by what will make the person feel their best'],
+    J: ['Judging', 'likes a planned day and a set routine'],
+    P: ['Perceiving', 'likes a flexible day with room to go with the flow']
+  };
   const letters = pairs.map(([a,b]) => {
     const w = r.scores[a] > r.scores[b] ? a : b; const n = Math.max(r.scores[a], r.scores[b]);
-    return w + ' (' + (n >= 6 ? 'strong' : n === 5 ? 'clear' : 'slight') + ')';
-  }).join(', ');
-  const text = 'MY ARTIST TYPE: ' + r.type + ' - ' + r.meta.salon + '\n' + letters +
+    const lvl = n >= 6 ? 'strong' : n === 5 ? 'clear' : 'slight';
+    return w + ' = ' + info[w][0] + ' (' + lvl + ', ' + n + ' of 7): ' + info[w][1];
+  }).join('\n');
+  const text = 'MY ARTIST TYPE: ' + r.type + ' - ' + r.meta.salon + '\n\nMY FOUR LETTERS\n' + letters +
     '\n\nHOW I WORK BEST\nWhat helps me thrive: ' + r.meta.need.join('; ') +
     '\nWhat gets in my way: ' + r.meta.avoid.join('; ') +
     '\nHow I like to get feedback: ' + r.meta.feedback;
