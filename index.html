@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Artist MB Type Quiz | Excursion II Education</title>
+<style>
+:root {
+  --cobalt: #1B21F0;
+  --green:  #ADE865;
+  --purple: #7031EB;
+  --yellow: #F9E450;
+  --pink:   #F093E2;
+  --sky:    #BBF1FD;
+  --ink:    #000000;
+  --muted:  #5E5E5E;
+  --rule:   #D5D5D5;
+  --white:  #FFFFFF;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: "Agenda", "Helvetica Neue", Helvetica, Arial, -apple-system, sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+.stage {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 28px 80px;
+}
+header {
+  text-align: center;
+  padding: 24px 0 32px;
+  margin-bottom: 32px;
+}
+.brand-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.brand-mark {
+  font-family: "Times New Roman", Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 0.95;
+  text-align: center;
+}
+.brand-mark .first { display: inline-block; transform: translateY(-2px); }
+.brand-mark .plus { font-size: 10px; vertical-align: super; }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cobalt);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(34px, 6vw, 58px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  color: var(--ink);
+  margin: 14px 0 10px;
+  text-transform: uppercase;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.start-screen, .question-screen, .result-screen { display: none; }
+.active { display: block; animation: fadeIn 0.45s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.intro-card {
+  background: var(--cobalt);
+  color: var(--white);
+  padding: 40px 32px;
+  position: relative;
+}
+.intro-card h2 {
+  color: var(--sky);
+  font-size: 13px;
+  margin: 0 0 18px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.intro-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+.intro-card p:last-of-type { margin-bottom: 0; }
+.intro-card strong { color: var(--sky); font-weight: 700; }
+.btn {
+  display: inline-block;
+  background: var(--cobalt);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-top: 28px;
+  font-family: inherit;
+}
+.btn:hover { background: #0a0fc4; transform: translateY(-1px); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+.btn-secondary:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+.btn-accent {
+  background: var(--green);
+  color: var(--ink);
+}
+.btn-accent:hover { background: #9adb52; }
+.progress {
+  height: 6px;
+  background: var(--rule);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cobalt);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.q-counter {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cobalt);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.q-text {
+  font-size: clamp(22px, 3.8vw, 30px);
+  font-weight: 800;
+  line-height: 1.18;
+  margin-bottom: 30px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.option {
+  background: var(--white);
+  border: 2px solid var(--rule);
+  padding: 20px 24px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: all 0.15s ease;
+  text-align: left;
+  font-family: inherit;
+  color: var(--ink);
+}
+.option:hover { border-color: var(--cobalt); }
+.option.selected {
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: var(--white);
+}
+.option .letter {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  background: var(--rule);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  margin-right: 14px;
+  vertical-align: middle;
+}
+.option.selected .letter {
+  background: var(--sky);
+  color: var(--cobalt);
+}
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.controls .btn {
+  margin-top: 0;
+}
+/* Result screen */
+.result-hero {
+  background: var(--cobalt);
+  color: var(--white);
+  padding: 56px 36px 44px;
+  text-align: center;
+  position: relative;
+}
+.result-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--sky);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.result-type {
+  font-size: clamp(80px, 14vw, 140px);
+  font-weight: 800;
+  color: var(--sky);
+  letter-spacing: 0.01em;
+  margin: 6px 0;
+  line-height: 0.95;
+}
+.result-name {
+  font-size: 18px;
+  color: var(--white);
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.result-temperament {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--sky);
+  text-transform: uppercase;
+  margin-top: 14px;
+  font-weight: 700;
+}
+.result-body { margin-top: 32px; padding: 16px 0; }
+.result-body p {
+  font-size: 15px; line-height: 1.6;
+  color: var(--ink); margin: 0 0 14px;
+}
+.result-callout {
+  background: var(--yellow);
+  padding: 24px 28px;
+  margin: 28px 0;
+}
+.result-callout strong {
+  display: block;
+  color: var(--cobalt);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.result-callout p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.result-callout.next {
+  background: var(--green);
+}
+.result-callout.next strong { color: var(--ink); }
+.bar-block {
+  margin-top: 28px;
+  background: var(--white);
+  padding: 26px 28px;
+  border: 2px solid var(--rule);
+}
+.bar-block h3 {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cobalt);
+  margin: 0 0 22px;
+  font-weight: 700;
+}
+.dimension {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+.dimension .label-left { text-align: right; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+.dimension .label-right { text-align: left; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+.dimension-bar {
+  height: 10px;
+  background: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.dimension-fill-left, .dimension-fill-right {
+  position: absolute; top: 0; bottom: 0;
+  background: var(--ink);
+}
+.dimension-fill-left { left: 0; }
+.dimension-fill-right { right: 0; }
+.dimension-bar.dominant-left .dimension-fill-left { background: var(--cobalt); }
+.dimension-bar.dominant-right .dimension-fill-right { background: var(--cobalt); }
+.strength-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: -4px 0 14px 102px;
+  letter-spacing: 0.02em;
+}
+.chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  margin-right: 6px;
+  color: var(--ink);
+}
+.chip-strong { background: var(--green); }
+.chip-clear  { background: var(--sky); }
+.chip-slight { background: var(--yellow); }
+.strength-key {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.strength-key strong { color: var(--ink); }
+.led-card {
+  border: 2px solid var(--ink);
+  padding: 28px 28px 10px;
+  margin-top: 8px;
+}
+.led-head {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cobalt); font-weight: 700;
+}
+.led-type {
+  font-size: 26px; font-weight: 800; margin: 6px 0 18px; letter-spacing: 0.01em;
+}
+.led-section { margin-bottom: 18px; }
+.led-label {
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-weight: 800; margin-bottom: 6px;
+}
+.led-section ul { margin: 0; padding-left: 20px; }
+.led-section li, .led-section p { font-size: 15px; line-height: 1.55; margin: 0 0 4px; }
+.footer-note {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  margin-top: 40px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+@media (max-width: 600px) {
+  .stage { padding: 24px 18px 60px; }
+  .intro-card { padding: 32px 22px; }
+  .result-hero { padding: 44px 22px 32px; }
+  .dimension { grid-template-columns: 74px 1fr 74px; }
+  .strength-note { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <div class="brand-bar">
+      <div class="brand-mark">
+        <span class="first">R<span class="plus">+co</span></span><br>
+        <span style="font-style:italic;">Excursions</span>
+      </div>
+    </div>
+    <div class="eyebrow">Excursion II Education  ·  R+co Excursions</div>
+    <h1>The Artist MB Type Quiz</h1>
+    <div class="subtitle">A quick read on how you work best</div>
+  </header>
+
+  <!-- START SCREEN -->
+  <div id="start" class="start-screen active">
+    <div class="intro-card">
+      <h2>Welcome.</h2>
+      <p>This is a Myers-Briggs-style quiz built for <strong>stylists</strong>. It shows how you naturally work, how you connect with clients, and what helps you do your best work.</p>
+      <p>It's 28 questions and takes about 6 minutes. There are no right answers and no good or bad types. Pick the option that feels true for you <strong>most of the time</strong> — not the one you think you should pick.</p>
+      <p>When you finish, you'll get your 4-letter type and a short <strong>"How I Work Best"</strong> card you can share with the person who shared this quiz with you.</p>
+    </div>
+    <button class="btn" onclick="startQuiz()">Begin the Quiz</button>
+  </div>
+
+  <!-- QUESTION SCREEN -->
+  <div id="quiz" class="question-screen">
+    <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="q-counter" id="q-counter">Question 1 of 28</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="controls">
+      <button class="btn btn-secondary" id="back-btn" onclick="goBack()">← Back</button>
+      <button class="btn" id="next-btn" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="result-screen">
+    <div class="result-hero">
+      <div class="result-eyebrow">Your Artist Type</div>
+      <div class="result-type" id="result-type">ENFP</div>
+      <div class="result-name" id="result-name">The Spark</div>
+      
+    </div>
+
+    <div class="bar-block">
+      <h3>Your Dimensions</h3>
+      <div id="dimension-bars"></div>
+      <p class="strength-key"><strong>Strong</strong> = this is your clear default. <strong>Clear</strong> = a real lean. <strong>Slight</strong> = you can flex both ways — the other letter is close behind.</p>
+    </div>
+
+    <div class="result-body">
+      <div class="result-callout next" style="margin-top:8px;">
+        <strong>Your Superpower Behind the Chair</strong>
+        <p id="result-superpower"></p>
+      </div>
+    </div>
+
+    <div class="led-card" id="led-card">
+      <div class="led-head">How I Work Best</div>
+      <div class="led-type" id="led-type"></div>
+      <div class="led-section">
+        <div class="led-label">What helps me thrive</div>
+        <ul id="led-need"></ul>
+      </div>
+      <div class="led-section">
+        <div class="led-label">What gets in my way</div>
+        <ul id="led-avoid"></ul>
+      </div>
+      <div class="led-section">
+        <div class="led-label">How I like to get feedback</div>
+        <p id="led-feedback"></p>
+      </div>
+    </div>
+
+    <div class="result-callout" style="margin-top: 24px;">
+      <strong>Next Step</strong>
+      <p>Share your card with the person who shared this quiz with you — take a screenshot, or tap the button below to copy it and paste it in a text. Then turn to <b>page <span id="result-page-num">20</span></b> of <i>The Artist Guide</i> for your full page.</p>
+    </div>
+
+    <div class="controls" style="margin-top: 24px;">
+      <button class="btn btn-secondary" onclick="restartQuiz()">Retake the Quiz</button>
+      <button class="btn" id="copy-btn" onclick="copyCard()">Copy My Card</button>
+    </div>
+
+    <div class="footer-note">
+      Albie X Cortes  ·  Excursion II Education  ·  R+co Excursions II
+    </div>
+    <div class="footer-note" style="margin-top:10px; font-weight:400; letter-spacing:0.08em; text-transform:none; color: var(--muted);">
+      A Myers-Briggs-style self-reflection tool. Not the official MBTI® assessment.
+    </div>
+  </div>
+</div>
+
+<script>
+// 28 questions — 7 per dimension (odd number = no ties), mixed order, A/B sides alternate
+const questions = [
+  { q: "Between clients, you'd rather...",
+    a: ["Chat with the team at the front desk", "Grab a quiet minute to yourself"],
+    dim: ["E", "I"] },
+  { q: "When a client shows you an inspo photo, you focus on...",
+    a: ["The feeling they're going for \u2014 the vibe behind the picture", "Exactly what's in the photo \u2014 the length, the tone, the shape"],
+    dim: ["N", "S"] },
+  { q: "When a client is unhappy with their color, your first move is to...",
+    a: ["Figure out what went wrong and fix it", "Make sure they feel heard and cared for"],
+    dim: ["T", "F"] },
+  { q: "Your ideal book is...",
+    a: ["Flexible \u2014 room for walk-ins and last-minute changes", "Planned weeks ahead \u2014 no surprises"],
+    dim: ["P", "J"] },
+  { q: "With a brand-new client, the conversation...",
+    a: ["Takes a few minutes \u2014 you warm up once you get to know them", "Flows right away \u2014 you love meeting new people"],
+    dim: ["I", "E"] },
+  { q: "You trust a new technique when...",
+    a: ["You've seen the step-by-step and know it works", "It opens up new creative possibilities"],
+    dim: ["S", "N"] },
+  { q: "When someone gives you feedback on your work, you want it...",
+    a: ["Kind, with context about how you're doing overall", "Straight and specific \u2014 just tell me"],
+    dim: ["F", "T"] },
+  { q: "Before a big color correction, you...",
+    a: ["Plan every step in advance", "Start with a rough plan and adjust as you go"],
+    dim: ["J", "P"] },
+  { q: "At an education day or hair show, you...",
+    a: ["Meet as many people as you can", "Stick with people you know and take it all in"],
+    dim: ["E", "I"] },
+  { q: "In a consultation, you mostly ask about...",
+    a: ["Their story \u2014 how they want to feel, what's changing in their life", "The practical stuff \u2014 their routine, their time, their budget"],
+    dim: ["N", "S"] },
+  { q: "When choosing what to recommend to a client, you go by...",
+    a: ["What will technically work best for their hair", "What will make them feel their best"],
+    dim: ["T", "F"] },
+  { q: "When your schedule changes at the last minute, you...",
+    a: ["Roll with it \u2014 it keeps the day interesting", "Feel thrown off \u2014 you liked the plan"],
+    dim: ["P", "J"] },
+  { q: "After a fully booked Saturday, you...",
+    a: ["Need quiet time at home to recharge", "Still have energy \u2014 let's go out"],
+    dim: ["I", "E"] },
+  { q: "When you explain a service to a client, you...",
+    a: ["Walk them through the steps and the products", "Paint the picture of the finished look"],
+    dim: ["S", "N"] },
+  { q: "When a coworker is having a rough day, you...",
+    a: ["Check in on how they're feeling", "Offer a practical tip to help fix it"],
+    dim: ["F", "T"] },
+  { q: "Your station is...",
+    a: ["Set up the same way every single day", "A little different depending on the day and your mood"],
+    dim: ["J", "P"] },
+  { q: "When you have an idea for the salon, you...",
+    a: ["Say it out loud in the team meeting", "Bring it up later, one-on-one or in a text"],
+    dim: ["E", "I"] },
+  { q: "You'd rather spend a month perfecting...",
+    a: ["Something new nobody in the salon is doing yet", "A classic you can nail every single time"],
+    dim: ["N", "S"] },
+  { q: "To you, a fair salon is one where...",
+    a: ["The same rules apply to everyone", "Everyone's personal situation is considered"],
+    dim: ["T", "F"] },
+  { q: "Your education goals for the year are...",
+    a: ["Whatever excites you when it comes up", "Written down, with dates"],
+    dim: ["P", "J"] },
+  { q: "Your favorite part of the day is...",
+    a: ["The focused calm of one great service", "The buzz of a full, busy salon"],
+    dim: ["I", "E"] },
+  { q: "When a formula doesn't turn out the way you planned, you...",
+    a: ["Retrace each step to find exactly what went wrong", "Try a new approach based on a gut feeling"],
+    dim: ["S", "N"] },
+  { q: "You feel most proud when...",
+    a: ["A client leaves feeling amazing about themselves", "Your work is technically flawless"],
+    dim: ["F", "T"] },
+  { q: "For deadlines like a photo shoot or a content post, you...",
+    a: ["Finish early \u2014 no stress", "Finish right at the end \u2014 you do your best work under pressure"],
+    dim: ["J", "P"] },
+  { q: "When you're learning something new, you learn best by...",
+    a: ["Talking it through with other people", "Watching first, then trying it on your own"],
+    dim: ["E", "I"] },
+  { q: "When you picture your career, you think about...",
+    a: ["The big dream \u2014 where this could take you", "The next clear step \u2014 the next skill, the next price increase"],
+    dim: ["N", "S"] },
+  { q: "If you disagree with a new salon policy, you...",
+    a: ["Point out where the logic doesn't work", "Explain how it will affect the people involved"],
+    dim: ["T", "F"] },
+  { q: "When the last client leaves, you...",
+    a: ["Head out \u2014 tomorrow will take care of itself", "Reset your station and prep for tomorrow"],
+    dim: ["P", "J"] }
+];
+
+// Stylist type data
+const typeMeta = {
+  ISTJ: { salon: "The Blueprint", page: 5,
+    superpower: "You are reliable, precise and consistent. Clients know they will get the same great result every time.",
+    need: ["Clear expectations \u2014 knowing exactly what great looks like", "A steady routine and a schedule I can count on", "Recognition for consistency, not just big wins"],
+    avoid: ["Last-minute changes with no explanation", "Vague feedback like \"just be more creative\""],
+    feedback: "Specific and factual. Show me the exact step to change." },
+  ISFJ: { salon: "The Safe Space", page: 6,
+    superpower: "You remember every client's story, and they feel safe in your chair. Loyalty follows you.",
+    need: ["A calm, private check-in \u2014 not a spotlight", "Knowing my effort is noticed", "Clear steps when something new is expected"],
+    avoid: ["Public criticism", "Problems left unspoken \u2014 I'd rather know"],
+    feedback: "Gently, one-on-one, starting with what's working." },
+  ESTJ: { salon: "The Anchor", page: 7,
+    superpower: "You keep the salon running. You hit your numbers and you help others hit theirs.",
+    need: ["Clear goals and numbers to aim for", "Responsibility I can own", "People who follow through on what they say"],
+    avoid: ["Wishy-washy decisions", "Rules that only apply to some people"],
+    feedback: "Direct and to the point. Give me the goal and let me run." },
+  ESFJ: { salon: "The Vibe Setter", page: 8,
+    superpower: "You make every client and coworker feel welcome. You set the warm mood of the salon.",
+    need: ["Warm, frequent appreciation \u2014 out loud", "A team that gets along", "Knowing how I'm doing, often"],
+    avoid: ["Coldness or silence", "Tension on the team that no one addresses"],
+    feedback: "Kind and personal. Start with what you value, then the fix." },
+  ISTP: { salon: "The Quiet Pro", page: 9,
+    superpower: "Your technical skill is excellent. You solve hard hair problems calmly and quietly.",
+    need: ["Freedom to do the work my way", "Hands-on education, not long lectures", "Respect for my craft"],
+    avoid: ["Micromanaging", "Long meetings with no point"],
+    feedback: "Short and practical. Show me, don't lecture me." },
+  ISFP: { salon: "The Moodboard", page: 10,
+    superpower: "Your work is beautiful and personal. Clients feel your care in every detail.",
+    need: ["Creative freedom", "Gentle, private encouragement", "Respect for my style"],
+    avoid: ["Harsh or public criticism", "Rigid scripts that take the art out of it"],
+    feedback: "Softly and privately. Start with what you love about my work." },
+  ESTP: { salon: "The Live Wire", page: 11,
+    superpower: "You bring energy, speed and confidence. You can turn any slow day around.",
+    need: ["Variety and action", "Fast decisions", "Short-term goals I can win right now"],
+    avoid: ["Slow processes and long waits", "Too much theory"],
+    feedback: "Quick and real. Give me one thing to try today." },
+  ESFP: { salon: "The Showstopper", page: 12,
+    superpower: "Clients love the fun experience you create. Your energy is contagious.",
+    need: ["Fun, recognition and celebration", "Energy and variety in my day", "Having my wins noticed out loud"],
+    avoid: ["Heavy, serious meetings", "Being ignored"],
+    feedback: "Upbeat. Celebrate first, then suggest." },
+  INTJ: { salon: "The Book Builder", page: 13,
+    superpower: "You think ahead and build smart systems for your own book and your career.",
+    need: ["Understanding the why behind decisions", "Room to improve how things are done", "A clear path to grow"],
+    avoid: ["Rules that don't make sense", "Being managed step by step"],
+    feedback: "Logical and honest. Explain the reasoning." },
+  INTP: { salon: "The Color Chemist", page: 14,
+    superpower: "You figure out the hardest color and cutting puzzles. You love learning how things work.",
+    need: ["Time to think things through", "Advanced education and new challenges", "Independence"],
+    avoid: ["Pressure for instant answers", "Small talk instead of substance"],
+    feedback: "One-on-one, with facts. Give me time to process." },
+  ENTJ: { salon: "The Level-Up", page: 15,
+    superpower: "You are ambitious and driven. You want to grow fast and lead others.",
+    need: ["Big goals and a clear path to grow", "Working alongside people who are sharp and decisive", "A real challenge"],
+    avoid: ["Slow progress", "Feeling held back"],
+    feedback: "Direct, with a challenge. Show me how to get to the next level." },
+  ENTP: { salon: "The Trendsetter", page: 16,
+    superpower: "You bring new ideas and keep the salon fresh. You love a creative challenge.",
+    need: ["Room to try new things", "Having my ideas heard", "Variety \u2014 no boring routine"],
+    avoid: ["\"We've always done it this way\"", "Too many rules"],
+    feedback: "Make it a conversation. Let me push back and work it out with you." },
+  INFJ: { salon: "The Confidant", page: 17,
+    superpower: "You connect deeply with clients. They leave feeling understood, not just styled.",
+    need: ["Meaning \u2014 knowing my work matters", "Deep, honest one-on-one talks", "A calm, positive culture"],
+    avoid: ["Drama and gossip", "Feeling like just a number"],
+    feedback: "Privately and thoughtfully. Connect it to my bigger goals." },
+  INFP: { salon: "The Dreamer", page: 18,
+    superpower: "You are creative and true to your values. Your work carries real heart.",
+    need: ["Encouragement and belief in me", "Creative freedom", "People I can trust with my feelings"],
+    avoid: ["Harsh feedback", "Pressure to sell in a way that feels fake"],
+    feedback: "Gently, with care. Show me you believe in me, then the next step." },
+  ENFJ: { salon: "The Hype Person", page: 19,
+    superpower: "You lift people up \u2014 clients and coworkers. You are a natural teacher.",
+    need: ["Chances to help and teach others", "Appreciation for how I support the team", "A shared vision"],
+    avoid: ["Coldness", "A divided team"],
+    feedback: "Warm and honest. Show me how the change helps people." },
+  ENFP: { salon: "The Spark", page: 20,
+    superpower: "Clients are drawn to your warmth and creativity. You make every visit feel special.",
+    need: ["Feeling seen \u2014 out-loud acknowledgment", "The story and the why, not just the rule", "Freedom to create, with a little structure to lean on"],
+    avoid: ["Cold critique", "Rigid scripts with no soul", "Being treated like a number on a spreadsheet"],
+    feedback: "Start with connection, then one clear thing to work on." }
+};
+
+// State
+let current = 0;
+let answers = {};
+
+function startQuiz() {
+  document.getElementById('start').classList.remove('active');
+  document.getElementById('quiz').classList.add('active');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-fill').style.width = `${((current) / questions.length) * 100}%`;
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  q.a.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="letter">${i === 0 ? 'A' : 'B'}</span>${text}`;
+    btn.onclick = () => selectOption(i);
+    if (answers[current] === i) btn.classList.add('selected');
+    optionsEl.appendChild(btn);
+  });
+
+  document.getElementById('back-btn').style.visibility = current === 0 ? 'hidden' : 'visible';
+  document.getElementById('next-btn').disabled = answers[current] === undefined;
+  document.getElementById('next-btn').textContent = current === questions.length - 1 ? 'See My Result →' : 'Next →';
+}
+
+function selectOption(idx) {
+  answers[current] = idx;
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function goNext() {
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function goBack() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+}
+
+function calculateType() {
+  const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+  questions.forEach((q, i) => {
+    const choice = answers[i];
+    if (choice !== undefined) {
+      scores[q.dim[choice]]++;
+    }
+  });
+  // 7 questions per pair — an odd number, so a tie is impossible
+  const type =
+    (scores.E > scores.I ? 'E' : 'I') +
+    (scores.S > scores.N ? 'S' : 'N') +
+    (scores.T > scores.F ? 'T' : 'F') +
+    (scores.J > scores.P ? 'J' : 'P');
+  return { type, scores };
+}
+
+function showResult() {
+  const { type, scores } = calculateType();
+  const meta = typeMeta[type];
+  document.getElementById('quiz').classList.remove('active');
+  document.getElementById('result').classList.add('active');
+
+  document.getElementById('result-type').textContent = type;
+  document.getElementById('result-name').textContent = meta.salon;
+  document.getElementById('result-page-num').textContent = meta.page;
+  document.getElementById('result-superpower').textContent = meta.superpower;
+  document.getElementById('led-type').textContent = type + " · " + meta.salon;
+  const fill = (id, items) => {
+    const el = document.getElementById(id); el.innerHTML = '';
+    items.forEach(t => { const li = document.createElement('li'); li.textContent = t; el.appendChild(li); });
+  };
+  fill('led-need', meta.need);
+  fill('led-avoid', meta.avoid);
+  document.getElementById('led-feedback').textContent = meta.feedback;
+  window.lastResult = { type, meta, scores };
+
+  // Dimension bars — fill ALWAYS grows toward the dominant letter
+  // so a clear cobalt bar visually pushes toward the side you scored.
+  const dimensions = [
+    { left: 'E', right: 'I', leftLabel: 'Extravert', rightLabel: 'Introvert' },
+    { left: 'S', right: 'N', leftLabel: 'Sensing', rightLabel: 'Intuitive' },
+    { left: 'T', right: 'F', leftLabel: 'Thinking', rightLabel: 'Feeling' },
+    { left: 'J', right: 'P', leftLabel: 'Judging', rightLabel: 'Perceiving' }
+  ];
+  const barsEl = document.getElementById('dimension-bars');
+  barsEl.innerHTML = '';
+  dimensions.forEach(d => {
+    const total = scores[d.left] + scores[d.right];
+    const leftPct = total ? (scores[d.left] / total) * 100 : 50;
+    const rightPct = 100 - leftPct;
+    const dominantLeft = leftPct >= 50;
+    const dominantPct = dominantLeft ? leftPct : rightPct;
+    // Soften the dominant label and bolden the bar toward the chosen side
+    const fillSide = dominantLeft
+      ? `<div class="dimension-fill-left" style="width: ${dominantPct}%; background: var(--cobalt);"></div>`
+      : `<div class="dimension-fill-right" style="width: ${dominantPct}%; background: var(--cobalt);"></div>`;
+    const leftEmphasis = dominantLeft ? 'style="color: var(--cobalt);"' : '';
+    const rightEmphasis = dominantLeft ? '' : 'style="color: var(--cobalt);"';
+    const row = document.createElement('div');
+    row.className = 'dimension';
+    row.innerHTML = `
+      <div class="label-left" ${leftEmphasis}>${d.leftLabel}</div>
+      <div class="dimension-bar">${fillSide}</div>
+      <div class="label-right" ${rightEmphasis}>${d.rightLabel}</div>
+    `;
+    barsEl.appendChild(row);
+    // Strength: 4-3 = slight, 5-2 = clear, 6-1 or 7-0 = strong
+    const win = Math.max(scores[d.left], scores[d.right]);
+    const winLabel = dominantLeft ? d.leftLabel : d.rightLabel;
+    const strength = win >= 6 ? 'Strong' : (win === 5 ? 'Clear' : 'Slight');
+    const note = document.createElement('div');
+    note.className = 'strength-note';
+    note.innerHTML = `<span class="chip chip-${strength.toLowerCase()}">${strength}</span> ${winLabel} — ${win} of 7`;
+    barsEl.appendChild(note);
+  });
+}
+
+function copyCard() {
+  const r = window.lastResult; if (!r) return;
+  const pairs = [['E','I'],['S','N'],['T','F'],['J','P']];
+  const letters = pairs.map(([a,b]) => {
+    const w = r.scores[a] > r.scores[b] ? a : b; const n = Math.max(r.scores[a], r.scores[b]);
+    return w + ' (' + (n >= 6 ? 'strong' : n === 5 ? 'clear' : 'slight') + ')';
+  }).join(', ');
+  const text = 'MY ARTIST TYPE: ' + r.type + ' - ' + r.meta.salon + '\n' + letters +
+    '\n\nHOW I WORK BEST\nWhat helps me thrive: ' + r.meta.need.join('; ') +
+    '\nWhat gets in my way: ' + r.meta.avoid.join('; ') +
+    '\nHow I like to get feedback: ' + r.meta.feedback;
+  const done = () => { const b = document.getElementById('copy-btn'); b.textContent = 'Copied ✓'; setTimeout(() => b.textContent = 'Copy My Card', 2000); };
+  const fallback = () => {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove();
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } else { fallback(); }
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = {};
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('start').classList.add('active');
+}
+</script>
+</body>
+</html>
